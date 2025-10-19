@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+ocument.addEventListener("DOMContentLoaded", function () {
   // --- KHỞI TẠO BAN ĐẦU ---
   const music = document.getElementById("bg-music");
   const canvas = document.getElementById("canvas");
