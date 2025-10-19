@@ -364,5 +364,10 @@ ocument.addEventListener("DOMContentLoaded", function () {
   startBackgroundEffects();
   createBackgroundStars();
   resetHeartStars(); // Gọi resetHeartStars thay vì createHeartStars ban đầu
+  
+  messageBackdrop.classList.remove("hidden");
+  messageCard.classList.remove("hidden");
+
   animate();
 });
+
