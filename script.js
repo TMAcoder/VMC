@@ -1,4 +1,4 @@
-ocument.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
   // --- KHỞI TẠO BAN ĐẦU ---
   const music = document.getElementById("bg-music");
   const canvas = document.getElementById("canvas");
@@ -364,10 +364,5 @@ ocument.addEventListener("DOMContentLoaded", function () {
   startBackgroundEffects();
   createBackgroundStars();
   resetHeartStars(); // Gọi resetHeartStars thay vì createHeartStars ban đầu
-  
-  messageBackdrop.classList.remove("hidden");
-  messageCard.classList.remove("hidden");
-
   animate();
 });
-
