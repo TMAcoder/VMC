@@ -49,6 +49,7 @@ const messages = [
   "Đứcc gayyyyy",
 ];
 const fallingTexts = [];
+const clickTexts = []; // MỚI: Mảng chứa các chữ hiện ra khi click
 
 function createFallingText() {
   const text = messages[Math.floor(Math.random() * messages.length)];
@@ -109,7 +110,6 @@ function createHeartStars(count = 1600) {
     const targetY = centerY + heart.y + offsetY;
 
     heartStars.push({
-      // ⭐ bắt đầu từ vị trí ngẫu nhiên khắp màn hình
       x: Math.random() * width,
       y: Math.random() * height,
       targetX,
@@ -121,7 +121,7 @@ function createHeartStars(count = 1600) {
       twinkleSpeed: Math.random() * 0.02 + 0.01,
       brightness: Math.random() * 0.5 + 0.5,
       hue: Math.random() * 60 + 300,
-      mode: "flying", // chuyển sang heart khi đến nơi
+      mode: "flying",
     });
   }
 }
@@ -160,17 +160,14 @@ function animate() {
 
   stars.forEach((star) => {
     star.twinkle += star.twinkleSpeed;
-
-    // ⭐ Hiệu ứng lóe sáng thật sự (thỉnh thoảng mới lóe lên)
-    const flicker = Math.random() < 0.005 ? 1 : 0; // ~0.5% sao lóe sáng mỗi frame
-
+    const flicker = Math.random() < 0.005 ? 1 : 0;
     const baseOpacity = star.brightness * (0.4 + 0.6 * Math.sin(star.twinkle));
-    const opacity = Math.min(1, baseOpacity + flicker); // nếu lóe, tăng sáng đột ngột
+    const opacity = Math.min(1, baseOpacity + flicker);
 
     ctx.save();
     ctx.globalAlpha = opacity;
     ctx.fillStyle = "#ffffff";
-    ctx.shadowBlur = flicker ? 20 : 0; // nếu lóe thì tỏa sáng
+    ctx.shadowBlur = flicker ? 20 : 0;
     ctx.shadowColor = flicker ? "#fff" : "transparent";
     ctx.beginPath();
     ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
@@ -196,7 +193,6 @@ function animate() {
     if (m.alpha <= 0) meteors.splice(i, 1);
   });
 
-  // Draw falling texts
   fallingTexts.forEach((t, i) => {
     ctx.save();
     ctx.font = `bold ${t.fontSize}px Pacifico`;
@@ -213,6 +209,27 @@ function animate() {
       fallingTexts.splice(i, 1);
     }
   });
+
+  // MỚI: Vẽ và cập nhật hiệu ứng chữ khi click
+  clickTexts.forEach((t, i) => {
+    ctx.save();
+    ctx.font = `bold ${t.fontSize}px Pacifico`;
+    ctx.fillStyle = `hsla(${t.hue}, 100%, 85%, ${t.alpha})`;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = `hsla(${t.hue}, 100%, 70%, ${t.alpha})`;
+    ctx.textAlign = "center"; // Căn giữa chữ tại vị trí click
+    ctx.textBaseline = "middle";
+    ctx.fillText(t.text, t.x, t.y);
+    ctx.restore();
+
+    t.alpha -= 0.02; // Tốc độ mờ dần
+
+    // Xóa chữ khỏi mảng khi nó đã mờ hẳn
+    if (t.alpha <= 0) {
+      clickTexts.splice(i, 1);
+    }
+  });
+
 
   heartStars.forEach((star, i) => {
     star.twinkle += star.twinkleSpeed;
@@ -269,6 +286,20 @@ canvas.addEventListener("mousemove", (e) => {
 });
 
 canvas.addEventListener("click", (e) => {
+  // MỚI: Thêm code để tạo chữ tại vị trí click
+  const text = messages[Math.floor(Math.random() * messages.length)];
+  const fontSize = Math.random() * 20 + 15; // Kích thước chữ to hơn một chút
+  clickTexts.push({
+    text: text,
+    x: e.clientX,
+    y: e.clientY,
+    alpha: 1.0, // Độ trong suốt ban đầu
+    fontSize: fontSize,
+    hue: Math.random() * 360, // Màu sắc ngẫu nhiên
+  });
+
+
+  // --- Code cũ vẫn giữ nguyên ---
   const centerX = width / 2;
   const centerY = height / 2 + 20;
   heartScale *= 1.015;
